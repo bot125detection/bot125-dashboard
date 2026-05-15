@@ -9,8 +9,8 @@
   <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
   <style>
     *{box-sizing:border-box;margin:0;padding:0}
-    body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#0d0f14;color:#e0e0e0;display:flex;min-height:100vh}
-    .sidebar{width:190px;background:#080a0e;border-right:1px solid #1a1d25;padding:1rem;display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh}
+    body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#0d0f14;color:#e0e0e0;display:flex;min-height:100vh;background-image:url('bg.png');background-size:cover;background-position:center;background-attachment:fixed;background-repeat:no-repeat}
+    .sidebar{width:190px;background:rgba(8,10,14,0.7);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-right:1px solid rgba(255,255,255,0.05);padding:1rem;display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh}
     .logo{display:flex;align-items:center;gap:8px;margin-bottom:2rem}
     .logo-icon{width:30px;height:30px;border-radius:8px;background:#6c63ff;display:flex;align-items:center;justify-content:center}
     .logo-text{font-size:14px;font-weight:500;color:#fff}
@@ -31,7 +31,7 @@
     .badge.offline{background:#2a1a1a;color:#f87171;border-color:#3a2020}
     .badge.offline .dot{background:#f87171}
     .stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:1.25rem}
-    .stat{background:#13161e;border-radius:10px;padding:14px;border:1px solid #1e2130;display:flex;align-items:center;gap:10px}
+    .stat{background:rgba(13,15,20,0.55);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-radius:10px;padding:14px;border:1px solid rgba(255,255,255,0.07);display:flex;align-items:center;gap:10px}
     .stat-icon{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:18px}
     .ic-purple{background:#1e1a3a;color:#a78bfa}
     .ic-red{background:#2a1a1a;color:#f87171}
@@ -41,7 +41,7 @@
     .stat-label{font-size:11px;color:#5a5f72;margin-top:1px}
     .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
     .row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:10px}
-    .card{background:#13161e;border-radius:10px;padding:1rem;border:1px solid #1e2130}
+    .card{background:rgba(13,15,20,0.55);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-radius:10px;padding:1rem;border:1px solid rgba(255,255,255,0.07)}
     .card-title{font-size:12px;font-weight:500;color:#c0c4d0;margin-bottom:12px;display:flex;align-items:center;gap:6px}
     .card-title i{font-size:14px;color:#5a5f72}
     .tog-row{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a1d25;font-size:12px;color:#a0a5b5}
@@ -67,11 +67,11 @@
     .inp-row{display:flex;gap:6px;margin-bottom:10px}
     .inp-row input{flex:1;font-size:12px;padding:7px 10px;border:1px solid #1e2130;border-radius:7px;background:#0d0f14;color:#e0e0e0;outline:none}
     .btn-add{font-size:12px;padding:7px 12px;border-radius:7px;border:none;background:#6c63ff;color:#fff;cursor:pointer;white-space:nowrap;font-weight:500}
-    .srv-card{background:#13161e;border-radius:10px;padding:1rem;border:1px solid #1e2130;display:flex;align-items:center;gap:12px}
+    .srv-card{background:rgba(13,15,20,0.55);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-radius:10px;padding:1rem;border:1px solid rgba(255,255,255,0.07);display:flex;align-items:center;gap:12px}
     .srv-av{width:44px;height:44px;border-radius:10px;background:#1e1a3a;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:22px;color:#a78bfa;border:1px solid #2a2550}
     .srv-name{font-size:14px;font-weight:500;color:#e0e0e0}
     .srv-meta{font-size:11px;color:#5a5f72;margin-top:2px}
-    .msg-card{background:#13161e;border-radius:10px;padding:1rem;border:1px solid #1e2130}
+    .msg-card{background:rgba(13,15,20,0.55);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-radius:10px;padding:1rem;border:1px solid rgba(255,255,255,0.07)}
     .msg-card textarea{width:100%;background:#0d0f14;border:1px solid #1e2130;border-radius:7px;color:#a0a5b5;font-size:12px;padding:8px 10px;resize:none;font-family:inherit;margin-bottom:8px;outline:none}
     .msg-foot{display:flex;align-items:center;justify-content:space-between}
     .ch-sel{font-size:11px;color:#5a5f72}
@@ -94,7 +94,7 @@
   <div class="user-box">
     <div class="avatar"><i class="ti ti-shield" style="font-size:14px"></i></div>
     <div>
-      <div class="uname">BOT125 Admin</div>
+      <div class="uname">BOT125 Whoisarlott</div>
       <div class="urole">Administrator</div>
     </div>
   </div>
