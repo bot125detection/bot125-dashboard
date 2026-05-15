@@ -108,7 +108,7 @@
     <div class="badge" id="bot-status"><div class="dot"></div> Mengecek...</div>
   </div>
 
-  <div class="stats">
+  <div class="stats" style="grid-template-columns:repeat(5,minmax(0,1fr))">
     <div class="stat">
       <div class="stat-icon ic-purple"><i class="ti ti-trash"></i></div>
       <div><div class="stat-val" id="stat-deleted">-</div><div class="stat-label">Pesan dihapus</div></div>
@@ -125,6 +125,10 @@
       <div class="stat-icon ic-green"><i class="ti ti-user-off"></i></div>
       <div><div class="stat-val" id="stat-timeout">-</div><div class="stat-label">User di-timeout</div></div>
     </div>
+    <div class="stat">
+      <div class="stat-icon" style="background:#1e2a3a;color:#38bdf8"><i class="ti ti-building-community"></i></div>
+      <div><div class="stat-val" id="server-count">-</div><div class="stat-label">Total server</div></div>
+    </div>
   </div>
 
   <div class="row2">
@@ -132,7 +136,7 @@
       <div class="srv-av"><i class="ti ti-building-community"></i></div>
       <div>
         <div class="srv-name">Server Kamu</div>
-        <div class="srv-meta"><i class="ti ti-building-community" style="font-size:11px"></i> <span id="server-count">-</span> server <div class="srv-meta"><i class="ti ti-shield-check" style="font-size:11px;color:#4ade80"></i> Terlindungi oleh BOT125</div>nbsp;·<div class="srv-meta"><i class="ti ti-shield-check" style="font-size:11px;color:#4ade80"></i> Terlindungi oleh BOT125</div>nbsp; <i class="ti ti-shield-check" style="font-size:11px;color:#4ade80"></i> Terlindungi</div>
+        <div class="srv-meta"><i class="ti ti-shield-check" style="font-size:11px;color:#4ade80"></i> Terlindungi oleh BOT125</div>
       </div>
     </div>
     <div class="msg-card">
@@ -192,7 +196,7 @@
       document.getElementById('stat-phishing').textContent = data.phishing ?? 0;
       document.getElementById('stat-image').textContent = data.image ?? 0;
       document.getElementById('stat-timeout').textContent = data.timeout ?? 0;
-      document.getElementById('server-count').textContent = data.servers ?? 0;
+      if(document.getElementById('server-count')) document.getElementById('server-count').textContent = data.servers ?? 0;
     })
     .catch(() => {
       const badge = document.getElementById('bot-status');
