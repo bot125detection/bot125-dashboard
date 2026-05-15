@@ -132,7 +132,7 @@
       <div class="srv-av"><i class="ti ti-building-community"></i></div>
       <div>
         <div class="srv-name">Server Kamu</div>
-        <div class="srv-meta"><i class="ti ti-shield-check" style="font-size:11px;color:#4ade80"></i> Terlindungi oleh BOT125</div>
+        <div class="srv-meta"><i class="ti ti-building-community" style="font-size:11px"></i> <span id="server-count">-</span> server <div class="srv-meta"><i class="ti ti-shield-check" style="font-size:11px;color:#4ade80"></i> Terlindungi oleh BOT125</div>nbsp;·<div class="srv-meta"><i class="ti ti-shield-check" style="font-size:11px;color:#4ade80"></i> Terlindungi oleh BOT125</div>nbsp; <i class="ti ti-shield-check" style="font-size:11px;color:#4ade80"></i> Terlindungi</div>
       </div>
     </div>
     <div class="msg-card">
@@ -192,6 +192,7 @@
       document.getElementById('stat-phishing').textContent = data.phishing ?? 0;
       document.getElementById('stat-image').textContent = data.image ?? 0;
       document.getElementById('stat-timeout').textContent = data.timeout ?? 0;
+      document.getElementById('server-count').textContent = data.servers ?? 0;
     })
     .catch(() => {
       const badge = document.getElementById('bot-status');
