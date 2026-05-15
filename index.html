@@ -280,6 +280,44 @@
     alert('Fitur kirim pesan custom akan aktif setelah integrasi channel ID dikonfigurasi.');
   }
 
+  // =====================
+  // TOGGLE STATE (localStorage)
+  // =====================
+  const toggleKeys = ['antiphishing', 'imagescanner', 'bannedwords', 'autotimeout'];
+  const toggleEls = document.querySelectorAll('.tog');
+
+  function saveToggles() {
+    const state = {};
+    document.querySelectorAll('.tog-row').forEach(row => {
+      const label = row.querySelector('span')?.textContent?.trim();
+      const tog = row.querySelector('.tog');
+      if (label && tog) state[label] = tog.classList.contains('on');
+    });
+    localStorage.setItem('bot125_toggles', JSON.stringify(state));
+  }
+
+  function loadToggles() {
+    const saved = localStorage.getItem('bot125_toggles');
+    if (!saved) return;
+    const state = JSON.parse(saved);
+    document.querySelectorAll('.tog-row').forEach(row => {
+      const label = row.querySelector('span')?.textContent?.trim();
+      const tog = row.querySelector('.tog');
+      if (label && tog && state[label] !== undefined) {
+        tog.classList.remove('on', 'off');
+        tog.classList.add(state[label] ? 'on' : 'off');
+      }
+    });
+  }
+
+  // Pasang event listener ke semua toggle
+  document.querySelectorAll('.tog').forEach(tog => {
+    tog.addEventListener('click', () => {
+      setTimeout(saveToggles, 100);
+    });
+  });
+
+  loadToggles();
   loadBlacklist();
   loadBannedWords();
   loadLogs();
