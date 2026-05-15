@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BOT125 Dashboard</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css" />
+  <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#0d0f14;color:#e0e0e0;display:flex;min-height:100vh}
+    .sidebar{width:190px;background:#080a0e;border-right:1px solid #1a1d25;padding:1rem;display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh}
+    .logo{display:flex;align-items:center;gap:8px;margin-bottom:2rem}
+    .logo-icon{width:30px;height:30px;border-radius:8px;background:#6c63ff;display:flex;align-items:center;justify-content:center}
+    .logo-text{font-size:14px;font-weight:500;color:#fff}
+    .nav-item{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:7px;cursor:pointer;font-size:13px;color:#5a5f72;margin-bottom:2px;text-decoration:none}
+    .nav-item.active,.nav-item:hover{background:#13161e;color:#a78bfa}
+    .nav-item i{font-size:16px}
+    .user-box{margin-top:auto;padding-top:1rem;border-top:1px solid #1a1d25;display:flex;align-items:center;gap:8px}
+    .avatar{width:30px;height:30px;border-radius:50%;background:#6c63ff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;color:#fff;flex-shrink:0}
+    .uname{font-size:12px;color:#e0e0e0;font-weight:500}
+    .urole{font-size:11px;color:#5a5f72}
+    .main{margin-left:190px;flex:1;padding:1.5rem 1.75rem;min-height:100vh}
+    .hero{margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between}
+    .hero h1{font-size:20px;font-weight:500;color:#fff}
+    .hero h1 span{color:#a78bfa}
+    .hero p{font-size:12px;color:#5a5f72;margin-top:3px}
+    .badge{display:inline-flex;align-items:center;gap:5px;font-size:12px;padding:5px 12px;border-radius:20px;background:#1a2a1e;color:#4ade80;border:1px solid #1e3a26}
+    .dot{width:6px;height:6px;border-radius:50%;background:#4ade80}
+    .badge.offline{background:#2a1a1a;color:#f87171;border-color:#3a2020}
+    .badge.offline .dot{background:#f87171}
+    .stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:1.25rem}
+    .stat{background:#13161e;border-radius:10px;padding:14px;border:1px solid #1e2130;display:flex;align-items:center;gap:10px}
+    .stat-icon{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:18px}
+    .ic-purple{background:#1e1a3a;color:#a78bfa}
+    .ic-red{background:#2a1a1a;color:#f87171}
+    .ic-blue{background:#1a1e2a;color:#60a5fa}
+    .ic-green{background:#1a2a1e;color:#4ade80}
+    .stat-val{font-size:22px;font-weight:500;color:#fff}
+    .stat-label{font-size:11px;color:#5a5f72;margin-top:1px}
+    .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+    .row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:10px}
+    .card{background:#13161e;border-radius:10px;padding:1rem;border:1px solid #1e2130}
+    .card-title{font-size:12px;font-weight:500;color:#c0c4d0;margin-bottom:12px;display:flex;align-items:center;gap:6px}
+    .card-title i{font-size:14px;color:#5a5f72}
+    .tog-row{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a1d25;font-size:12px;color:#a0a5b5}
+    .tog-row:last-child{border-bottom:none}
+    .tog{width:36px;height:20px;border-radius:20px;position:relative;flex-shrink:0;cursor:pointer;transition:background 0.2s}
+    .tog.on{background:#6c63ff}
+    .tog.off{background:#1e2130}
+    .tog::after{content:'';position:absolute;width:14px;height:14px;border-radius:50%;background:#fff;top:3px;transition:left 0.2s}
+    .tog.on::after{left:19px}
+    .tog.off::after{left:3px}
+    .log-item{display:flex;align-items:flex-start;gap:8px;padding:7px 0;border-bottom:1px solid #1a1d25;font-size:12px}
+    .log-item:last-child{border-bottom:none}
+    .log-time{color:#3a3f52;white-space:nowrap;min-width:40px}
+    .log-msg{color:#5a5f72;line-height:1.5}
+    .log-msg strong{color:#a0a5b5;font-weight:500}
+    .pill{font-size:10px;padding:2px 6px;border-radius:20px;margin-left:4px}
+    .p-red{background:#2a1a1a;color:#f87171}
+    .p-yellow{background:#2a2210;color:#fbbf24}
+    .p-green{background:#1a2a1e;color:#4ade80}
+    .list-item{display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-bottom:1px solid #1a1d25;font-size:12px;color:#a0a5b5}
+    .list-item:last-child{border-bottom:none}
+    .list-item button{background:none;border:none;color:#f87171;cursor:pointer;font-size:13px}
+    .inp-row{display:flex;gap:6px;margin-bottom:10px}
+    .inp-row input{flex:1;font-size:12px;padding:7px 10px;border:1px solid #1e2130;border-radius:7px;background:#0d0f14;color:#e0e0e0;outline:none}
+    .btn-add{font-size:12px;padding:7px 12px;border-radius:7px;border:none;background:#6c63ff;color:#fff;cursor:pointer;white-space:nowrap;font-weight:500}
+    .srv-card{background:#13161e;border-radius:10px;padding:1rem;border:1px solid #1e2130;display:flex;align-items:center;gap:12px}
+    .srv-av{width:44px;height:44px;border-radius:10px;background:#1e1a3a;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:22px;color:#a78bfa;border:1px solid #2a2550}
+    .srv-name{font-size:14px;font-weight:500;color:#e0e0e0}
+    .srv-meta{font-size:11px;color:#5a5f72;margin-top:2px}
+    .msg-card{background:#13161e;border-radius:10px;padding:1rem;border:1px solid #1e2130}
+    .msg-card textarea{width:100%;background:#0d0f14;border:1px solid #1e2130;border-radius:7px;color:#a0a5b5;font-size:12px;padding:8px 10px;resize:none;font-family:inherit;margin-bottom:8px;outline:none}
+    .msg-foot{display:flex;align-items:center;justify-content:space-between}
+    .ch-sel{font-size:11px;color:#5a5f72}
+    .btn-send{font-size:12px;padding:7px 14px;border-radius:7px;border:none;background:#6c63ff;color:#fff;cursor:pointer;font-weight:500}
+    .empty{color:#3a3f52;font-size:12px;text-align:center;padding:10px 0}
+    @media(max-width:768px){.sidebar{display:none}.main{margin-left:0}.stats{grid-template-columns:repeat(2,1fr)}.row2,.row3{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+
+<div class="sidebar">
+  <div class="logo">
+    <div class="logo-icon"><i class="ti ti-shield-check" style="font-size:16px;color:#fff"></i></div>
+    <span class="logo-text">BOT125</span>
+  </div>
+  <a class="nav-item active" href="#"><i class="ti ti-layout-dashboard"></i> Dasbor</a>
+  <a class="nav-item" href="#blacklist"><i class="ti ti-world-off"></i> Blacklist</a>
+  <a class="nav-item" href="#bannedwords"><i class="ti ti-message-off"></i> Banned words</a>
+  <a class="nav-item" href="#logs"><i class="ti ti-file-text"></i> Log aktivitas</a>
+  <div class="user-box">
+    <div class="avatar"><i class="ti ti-shield" style="font-size:14px"></i></div>
+    <div>
+      <div class="uname">BOT125 Admin</div>
+      <div class="urole">Administrator</div>
+    </div>
+  </div>
+</div>
+
+<div class="main">
+  <div class="hero">
+    <div>
+      <h1>Selamat datang kembali, <span>Admin!</span></h1>
+      <p>Pantau aktivitas bot dan statistik server kamu.</p>
+    </div>
+    <div class="badge" id="bot-status"><div class="dot"></div> Mengecek...</div>
+  </div>
+
+  <div class="stats">
+    <div class="stat">
+      <div class="stat-icon ic-purple"><i class="ti ti-trash"></i></div>
+      <div><div class="stat-val" id="stat-deleted">-</div><div class="stat-label">Pesan dihapus</div></div>
+    </div>
+    <div class="stat">
+      <div class="stat-icon ic-red"><i class="ti ti-link-off"></i></div>
+      <div><div class="stat-val" id="stat-phishing">-</div><div class="stat-label">Link phishing</div></div>
+    </div>
+    <div class="stat">
+      <div class="stat-icon ic-blue"><i class="ti ti-photo-off"></i></div>
+      <div><div class="stat-val" id="stat-image">-</div><div class="stat-label">Gambar scam</div></div>
+    </div>
+    <div class="stat">
+      <div class="stat-icon ic-green"><i class="ti ti-user-off"></i></div>
+      <div><div class="stat-val" id="stat-timeout">-</div><div class="stat-label">User di-timeout</div></div>
+    </div>
+  </div>
+
+  <div class="row2">
+    <div class="srv-card">
+      <div class="srv-av"><i class="ti ti-building-community"></i></div>
+      <div>
+        <div class="srv-name">Server Kamu</div>
+        <div class="srv-meta"><i class="ti ti-shield-check" style="font-size:11px;color:#4ade80"></i> Terlindungi oleh BOT125</div>
+      </div>
+    </div>
+    <div class="msg-card">
+      <div class="card-title"><i class="ti ti-send"></i> Pesan custom</div>
+      <textarea id="custom-msg" rows="2" placeholder="Ketik pengumuman ke server..."></textarea>
+      <div class="msg-foot">
+        <div class="ch-sel"><i class="ti ti-hash" style="font-size:12px"></i> Kirim via bot</div>
+        <button class="btn-send" onclick="sendMsg()">Kirim <i class="ti ti-arrow-right" style="font-size:12px"></i></button>
+      </div>
+    </div>
+  </div>
+
+  <div class="row3">
+    <div class="card">
+      <div class="card-title"><i class="ti ti-toggle-right"></i> Pengaturan cepat</div>
+      <div class="tog-row"><span>Anti-phishing link</span><div class="tog on" onclick="this.classList.toggle('on');this.classList.toggle('off')"></div></div>
+      <div class="tog-row"><span>Scan gambar</span><div class="tog on" onclick="this.classList.toggle('on');this.classList.toggle('off')"></div></div>
+      <div class="tog-row"><span>Banned words</span><div class="tog off" onclick="this.classList.toggle('on');this.classList.toggle('off')"></div></div>
+      <div class="tog-row"><span>Auto timeout</span><div class="tog on" onclick="this.classList.toggle('on');this.classList.toggle('off')"></div></div>
+    </div>
+
+    <div class="card" id="blacklist">
+      <div class="card-title"><i class="ti ti-world-off"></i> Blacklist domain</div>
+      <div class="inp-row">
+        <input type="text" id="bl-input" placeholder="Tambah domain..." />
+        <button class="btn-add" onclick="addBlacklist()">+ Tambah</button>
+      </div>
+      <div id="bl-list"><div class="empty">Memuat...</div></div>
+    </div>
+
+    <div class="card" id="bannedwords">
+      <div class="card-title"><i class="ti ti-message-off"></i> Banned words</div>
+      <div class="inp-row">
+        <input type="text" id="bw-input" placeholder="Tambah kata..." />
+        <button class="btn-add" onclick="addBannedWord()">+ Tambah</button>
+      </div>
+      <div id="bw-list"><div class="empty">Memuat...</div></div>
+    </div>
+  </div>
+
+  <div class="card" id="logs">
+    <div class="card-title"><i class="ti ti-clock"></i> Log aktivitas terbaru</div>
+    <div id="log-list"><div class="empty">Memuat...</div></div>
+  </div>
+</div>
+
+<script>
+  const API = 'https://bot125-detection-production.up.railway.app';
+  const socket = io(API);
+
+  // Status bot
+  fetch(API + '/api/stats')
+    .then(r => r.json())
+    .then(data => {
+      document.getElementById('bot-status').innerHTML = '<div class="dot"></div> Bot online';
+      document.getElementById('stat-deleted').textContent = data.deleted ?? 0;
+      document.getElementById('stat-phishing').textContent = data.phishing ?? 0;
+      document.getElementById('stat-image').textContent = data.image ?? 0;
+      document.getElementById('stat-timeout').textContent = data.timeout ?? 0;
+    })
+    .catch(() => {
+      const badge = document.getElementById('bot-status');
+      badge.className = 'badge offline';
+      badge.innerHTML = '<div class="dot"></div> Bot offline';
+    });
+
+  // Load blacklist
+  function loadBlacklist() {
+    fetch(API + '/api/blacklist').then(r => r.json()).then(data => {
+      const el = document.getElementById('bl-list');
+      if (!data.domains.length) { el.innerHTML = '<div class="empty">Blacklist kosong</div>'; return; }
+      el.innerHTML = data.domains.map(d =>
+        `<div class="list-item"><span>${d}</span><button onclick="removeBlacklist('${d}')"><i class="ti ti-trash"></i></button></div>`
+      ).join('');
+    });
+  }
+
+  function addBlacklist() {
+    const val = document.getElementById('bl-input').value.trim();
+    if (!val) return;
+    fetch(API + '/api/blacklist', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({domain: val, action:'add'}) })
+      .then(() => { document.getElementById('bl-input').value = ''; loadBlacklist(); });
+  }
+
+  function removeBlacklist(domain) {
+    fetch(API + '/api/blacklist', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({domain, action:'remove'}) })
+      .then(() => loadBlacklist());
+  }
+
+  // Load banned words
+  function loadBannedWords() {
+    fetch(API + '/api/bannedwords').then(r => r.json()).then(data => {
+      const el = document.getElementById('bw-list');
+      if (!data.words.length) { el.innerHTML = '<div class="empty">Banned words kosong</div>'; return; }
+      el.innerHTML = data.words.map(w =>
+        `<div class="list-item"><span>${w}</span><button onclick="removeBannedWord('${w}')"><i class="ti ti-trash"></i></button></div>`
+      ).join('');
+    });
+  }
+
+  function addBannedWord() {
+    const val = document.getElementById('bw-input').value.trim();
+    if (!val) return;
+    fetch(API + '/api/bannedwords', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({word: val, action:'add'}) })
+      .then(() => { document.getElementById('bw-input').value = ''; loadBannedWords(); });
+  }
+
+  function removeBannedWord(word) {
+    fetch(API + '/api/bannedwords', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({word, action:'remove'}) })
+      .then(() => loadBannedWords());
+  }
+
+  // Load logs
+  function loadLogs() {
+    fetch(API + '/api/logs').then(r => r.json()).then(data => {
+      const el = document.getElementById('log-list');
+      if (!data.length) { el.innerHTML = '<div class="empty">Belum ada aktivitas</div>'; return; }
+      el.innerHTML = data.slice(0, 20).map(log => {
+        const time = new Date(log.created_at).toLocaleTimeString('id-ID', {hour:'2-digit',minute:'2-digit'});
+        const pill = log.type === 'timeout' ? '<span class="pill p-red">timeout</span>'
+                   : log.type === 'phishing' ? '<span class="pill p-red">phishing</span>'
+                   : log.type === 'image' ? '<span class="pill p-red">gambar</span>'
+                   : '<span class="pill p-yellow">hapus</span>';
+        return `<div class="log-item"><div class="log-time">${time}</div><div class="log-msg"><strong>@${log.username}</strong> — ${log.detail}${pill}</div></div>`;
+      }).join('');
+    });
+  }
+
+  // Realtime log
+  socket.on('new_log', (log) => {
+    document.getElementById('stat-deleted').textContent = parseInt(document.getElementById('stat-deleted').textContent || 0) + (log.type === 'deleted' ? 1 : 0);
+    document.getElementById('stat-phishing').textContent = parseInt(document.getElementById('stat-phishing').textContent || 0) + (log.type === 'phishing' ? 1 : 0);
+    document.getElementById('stat-image').textContent = parseInt(document.getElementById('stat-image').textContent || 0) + (log.type === 'image' ? 1 : 0);
+    document.getElementById('stat-timeout').textContent = parseInt(document.getElementById('stat-timeout').textContent || 0) + (log.type === 'timeout' ? 1 : 0);
+    loadLogs();
+  });
+
+  function sendMsg() {
+    alert('Fitur kirim pesan custom akan aktif setelah integrasi channel ID dikonfigurasi.');
+  }
+
+  loadBlacklist();
+  loadBannedWords();
+  loadLogs();
+</script>
+</body>
+</html>
