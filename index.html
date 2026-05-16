@@ -143,8 +143,12 @@
     <div class="msg-card">
       <div class="card-title"><i class="ti ti-send"></i> Pesan custom</div>
       <textarea id="custom-msg" rows="2" placeholder="Ketik pengumuman ke server..."></textarea>
+      <div style="display:flex;gap:6px;margin-bottom:8px">
+        <div id="toggle-mine" onclick="setBroadcastMode('mine')" style="flex:1;padding:6px 10px;border-radius:7px;border:1px solid #6c63ff;background:#1e1a3a;color:#a78bfa;font-size:11px;cursor:pointer;text-align:center">🏠 Server saya</div>
+        <div id="toggle-all" onclick="setBroadcastMode('all')" style="flex:1;padding:6px 10px;border-radius:7px;border:1px solid #1e2130;background:transparent;color:#5a5f72;font-size:11px;cursor:pointer;text-align:center">🌐 Semua server</div>
+      </div>
       <div class="msg-foot">
-        <div class="ch-sel"><i class="ti ti-hash" style="font-size:12px"></i> Kirim via bot</div>
+        <div class="ch-sel" id="broadcast-label"><i class="ti ti-hash" style="font-size:12px"></i> Server saya</div>
         <button class="btn-send" onclick="sendMsg()">Kirim <i class="ti ti-arrow-right" style="font-size:12px"></i></button>
       </div>
     </div>
