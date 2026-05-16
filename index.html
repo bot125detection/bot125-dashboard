@@ -276,8 +276,48 @@
     loadLogs();
   });
 
+  let broadcastMode = 'mine';
+
+  function setBroadcastMode(mode) {
+    broadcastMode = mode;
+    const mine = document.getElementById('toggle-mine');
+    const all = document.getElementById('toggle-all');
+    const label = document.getElementById('broadcast-label');
+    if (mode === 'mine') {
+      mine.style.border = '1px solid #6c63ff';
+      mine.style.background = '#1e1a3a';
+      mine.style.color = '#a78bfa';
+      all.style.border = '1px solid #1e2130';
+      all.style.background = 'transparent';
+      all.style.color = '#5a5f72';
+      label.innerHTML = '<i class="ti ti-hash" style="font-size:12px"></i> Server saya';
+    } else {
+      all.style.border = '1px solid #6c63ff';
+      all.style.background = '#1e1a3a';
+      all.style.color = '#a78bfa';
+      mine.style.border = '1px solid #1e2130';
+      mine.style.background = 'transparent';
+      mine.style.color = '#5a5f72';
+      label.innerHTML = '<i class="ti ti-hash" style="font-size:12px"></i> Semua server (' + document.getElementById('server-count').textContent + ')';
+    }
+  }
+
   function sendMsg() {
-    alert('Fitur kirim pesan custom akan aktif setelah integrasi channel ID dikonfigurasi.');
+    const msg = document.getElementById('custom-msg').value.trim();
+    if (!msg) return alert('Pesan tidak boleh kosong!');
+    if (broadcastMode === 'all' && !confirm('Kirim ke SEMUA server? Pastikan pesannya benar!')) return;
+    fetch(API + '/api/broadcast', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ message: msg, mode: broadcastMode })
+    }).then(r => r.json()).then(data => {
+      if (data.success) {
+        alert('✅ Pesan terkirim ke ' + data.sent + ' server!');
+        document.getElementById('custom-msg').value = '';
+      } else {
+        alert('❌ Gagal: ' + data.error);
+      }
+    }).catch(() => alert('❌ Gagal koneksi ke bot!'));
   }
 
   // =====================
